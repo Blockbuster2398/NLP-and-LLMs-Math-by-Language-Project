@@ -3,6 +3,7 @@ from google.cloud import translate
 
 # See https://codelabs.developers.google.com/codelabs/cloud-translation-python3#0 for more information
 
+# https://docs.cloud.google.com/translate/docs/translate-text#translate_v3_translate_text-python Check later for advanced details (model choice?)
 
 # PROJECT_ID = environ.get("PROJECT_ID", "") # (Don't care about keeping this secret)
 PROJECT_ID = "mathbylanguage"

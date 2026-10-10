@@ -6,10 +6,10 @@ from pathlib import Path
 root_path = Path(__file__).resolve().parent.parent
 
 
-def translate_dataset(target_language, output_samples=1000):
+def translate_dataset(target_language, output_samples=100):
     train_samples = int(output_samples * .85)
     test_samples = int(output_samples * .15)
-    save_directory = root_path / "datasets" / ("gsm8k-" + target_language)
+    save_directory = root_path / "datasets" / ("gsm8k-" + target_language + "-" + str(output_samples))
     os.makedirs(save_directory, exist_ok=True)
 
     source_train = pd.read_json(root_path / "datasets/gsm8k-en/train.jsonl", lines=True)
@@ -56,6 +56,25 @@ if __name__ == "__main__":
     # print_supported_languages('en')
     # 100 samples is about 60k (input) characters
     # 500,000 characters/month are provided for free translation
-    translate_dataset(target_language="ca", output_samples=10)
+    
+    """
+    High Resource:
+    Chinese - zh
+    Spanish - es 
+    Latin - la
+    Dutch - nl
 
+    Low Resource:
+    Esperanto - eo
+    Udmert - not supported :(
+    Igbo -ig
+    Hmong - hmn
+    """
+    translate_dataset(target_language="zh", output_samples=100)
+    # translate_dataset(target_language="es", output_samples=100)
+    translate_dataset(target_language="la", output_samples=100)
+    translate_dataset(target_language="nl", output_samples=100)
 
+    translate_dataset(target_language="eo", output_samples=100)
+    translate_dataset(target_language="ig", output_samples=100)
+    translate_dataset(target_language="hmn", output_samples=100)
