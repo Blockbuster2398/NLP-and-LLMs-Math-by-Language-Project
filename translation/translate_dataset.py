@@ -1,4 +1,4 @@
-from translation_api import translate_text
+from translation_api import translate_text, print_supported_languages
 import os
 import pandas as pd
 from pathlib import Path
@@ -52,6 +52,10 @@ def translate_dataset(target_language, output_samples=1000):
     output_test.to_json(save_directory / "test.jsonl", orient="records", lines=True)
     
 
-translate_dataset(target_language="es", output_samples=10)
+if __name__ == "__main__":
+    # print_supported_languages('en')
+    # 100 samples are worth about 60k characters
+    # 500,000 characters/month are provided for free translation
+    translate_dataset(target_language="ja", output_samples=10)
 
 
