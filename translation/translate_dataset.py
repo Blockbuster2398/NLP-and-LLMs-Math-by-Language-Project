@@ -54,8 +54,8 @@ def translate_dataset(target_language, output_samples=1000):
 
 if __name__ == "__main__":
     # print_supported_languages('en')
-    # 100 samples are worth about 60k characters
+    # 100 samples is about 60k (input) characters
     # 500,000 characters/month are provided for free translation
-    translate_dataset(target_language="ja", output_samples=10)
+    translate_dataset(target_language="ca", output_samples=10)
 
 
