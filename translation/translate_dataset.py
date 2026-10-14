@@ -15,6 +15,13 @@ def translate_dataset(target_language, output_samples=100):
     source_train = pd.read_json(root_path / "datasets/gsm8k-en/train.jsonl", lines=True)
     source_test = pd.read_json(root_path / "datasets/gsm8k-en/test.jsonl", lines=True)
 
+    existing_train = pd.read_json(save_directory / "train.jsonl", lines=True)
+    existing_test = pd.read_json(save_directory / "test.jsonl", lines=True)
+    
+    completed_training_examples = existing_train.shape[0]
+    completed_test_examples = existing_test.shape[0]
+    print(f"Existing examples -- Train: {completed_training_examples}, Test: {completed_test_examples}")
+    
     columns = ["question", "answer"]
     
     output_test = pd.DataFrame(columns=columns)
@@ -22,7 +29,7 @@ def translate_dataset(target_language, output_samples=100):
     # Create translated training set
     output_questions = []
     output_answers = []
-    for i in range(train_samples):
+    for i in range(completed_training_examples, train_samples):
         source_row = source_train.iloc[i]
         question = source_row["question"]
         answer = source_row["answer"]
@@ -32,13 +39,14 @@ def translate_dataset(target_language, output_samples=100):
         output_answers.append(new_answer)
         print(f"{i+1}/{train_samples} training set problems translated!", end = "\r", flush=True)
     output_train = pd.DataFrame({'question':output_questions, 'answer':output_answers})
-    # Save
-    output_train.to_json(save_directory / "train.jsonl", orient="records", lines=True)
+    # Add to existing samples and save
+    all_train_examples = pd.concat([existing_train, output_train], ignore_index=False, sort=False)
+    all_train_examples.to_json(save_directory / "train.jsonl", orient="records", lines=True)
     
     # Create translated test set
     output_questions = []
     output_answers = []
-    for i in range(test_samples):
+    for i in range(completed_test_examples, test_samples):
         source_row = source_test.iloc[i]
         question = source_row["question"]
         answer = source_row["answer"]
@@ -48,8 +56,9 @@ def translate_dataset(target_language, output_samples=100):
         output_answers.append(new_answer)
         print(f"{i+1}/{test_samples} test set problems translated!", end = "\r", flush=True)
     output_test = pd.DataFrame({'question':output_questions, 'answer':output_answers})
-    # Save
-    output_test.to_json(save_directory / "test.jsonl", orient="records", lines=True)
+    # Add to existing samples and save
+    all_test_examples = pd.concat([existing_test, output_test], ignore_index=False, sort=False)
+    all_test_examples.to_json(save_directory / "test.jsonl", orient="records", lines=True)
     
 
 if __name__ == "__main__":
@@ -71,10 +80,12 @@ if __name__ == "__main__":
     Hmong - hmn
     """
     translate_dataset(target_language="zh", output_samples=100)
-    # translate_dataset(target_language="es", output_samples=100)
+    translate_dataset(target_language="es", output_samples=100)
     translate_dataset(target_language="la", output_samples=100)
     translate_dataset(target_language="nl", output_samples=100)
 
     translate_dataset(target_language="eo", output_samples=100)
     translate_dataset(target_language="ig", output_samples=100)
     translate_dataset(target_language="hmn", output_samples=100)
+
+    print(f"Translations Complete!")
