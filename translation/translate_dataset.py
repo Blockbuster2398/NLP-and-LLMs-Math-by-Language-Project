@@ -9,8 +9,8 @@ root_path = Path(__file__).resolve().parent.parent
 def translate_dataset(target_language, output_samples=100):
     train_samples = int(output_samples * .85)
     test_samples = int(output_samples * .15)
-    # save_directory = root_path / "datasets" / ("gsm8k-" + target_language + "-" + str(output_samples))
-    save_directory = root_path / "datasets" / ("gsm8k-" + target_language + "-" + "100")
+    # save_directory = root_path / "datasets" / ("gsm8k-" + target_language + "-" + str(output_samples)) # Old naming scheme
+    save_directory = root_path / "datasets" / ("gsm8k-" + target_language)
 
     os.makedirs(save_directory, exist_ok=True)
 
@@ -22,7 +22,8 @@ def translate_dataset(target_language, output_samples=100):
     
     completed_training_examples = existing_train.shape[0]
     completed_test_examples = existing_test.shape[0]
-    print(f"Existing examples -- Train: {completed_training_examples}, Test: {completed_test_examples}")
+    total_completed_examples = completed_training_examples + completed_test_examples
+    print(f"{total_completed_examples} Existing examples -- Train: {completed_training_examples}, Test: {completed_test_examples}")
     
     columns = ["question", "answer"]
     
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     Igbo -ig
     Hmong - hmn
     """
-    translate_dataset(target_language="zh", output_samples=115)
+    translate_dataset(target_language="zh", output_samples=120)
     translate_dataset(target_language="es", output_samples=100)
     translate_dataset(target_language="la", output_samples=100)
     translate_dataset(target_language="nl", output_samples=100)
