@@ -9,7 +9,9 @@ root_path = Path(__file__).resolve().parent.parent
 def translate_dataset(target_language, output_samples=100):
     train_samples = int(output_samples * .85)
     test_samples = int(output_samples * .15)
-    save_directory = root_path / "datasets" / ("gsm8k-" + target_language + "-" + str(output_samples))
+    # save_directory = root_path / "datasets" / ("gsm8k-" + target_language + "-" + str(output_samples))
+    save_directory = root_path / "datasets" / ("gsm8k-" + target_language + "-" + "100")
+
     os.makedirs(save_directory, exist_ok=True)
 
     source_train = pd.read_json(root_path / "datasets/gsm8k-en/train.jsonl", lines=True)
@@ -79,7 +81,7 @@ if __name__ == "__main__":
     Igbo -ig
     Hmong - hmn
     """
-    translate_dataset(target_language="zh", output_samples=100)
+    translate_dataset(target_language="zh", output_samples=115)
     translate_dataset(target_language="es", output_samples=100)
     translate_dataset(target_language="la", output_samples=100)
     translate_dataset(target_language="nl", output_samples=100)
