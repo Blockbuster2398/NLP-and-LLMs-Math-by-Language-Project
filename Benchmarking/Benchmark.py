@@ -16,8 +16,16 @@ client = OpenAI(
     base_url="https://spark.cs.trinity.edu/v1",
     api_key=api_key,
 )
-model = "qwen2.5-7b"
+model = "gemma-3-12b"
 max_workers = 2
+max_lines = 20  # Set to a positive integer to limit examples per dataset.
+
+# Possible Models:
+# qwen2.5-3b
+# qwen2.5-7b
+# gemma-3-12b
+# deepseek-r1-14b
+# Arena Model
 
 project_root = Path(__file__).resolve().parents[1]
 datasets_dir = project_root / "datasets"
@@ -59,15 +67,17 @@ def prompt_is_correct(prompt):
 if not dataset_paths:
     raise FileNotFoundError(f"No test.jsonl datasets found under {datasets_dir}.")
 
-with results_path.open("w", newline="", encoding="utf-8") as results_file:
+write_header = not results_path.exists() or results_path.stat().st_size == 0
+with results_path.open("a", newline="", encoding="utf-8") as results_file:
     writer = csv.DictWriter(
         results_file,
-        fieldnames=("dataset", "model", "correct", "total", "accuracy"),
+        fieldnames=("model", "dataset", "correct", "total", "accuracy"),
     )
-    writer.writeheader()
+    if write_header:
+        writer.writeheader()
 
     for dataset_path in dataset_paths:
-        df = pd.read_json(dataset_path, lines=True)
+        df = pd.read_json(dataset_path, lines=True, nrows=max_lines)
         total = len(df)
         correct = 0
 
@@ -78,8 +88,8 @@ with results_path.open("w", newline="", encoding="utf-8") as results_file:
         accuracy = correct / total if total else 0
         writer.writerow(
             {
-                "dataset": dataset_path.parent.name,
                 "model": model,
+                "dataset": dataset_path.parent.name,
                 "correct": correct,
                 "total": total,
                 "accuracy": f"{accuracy:.4f}",
