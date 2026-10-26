@@ -8,6 +8,7 @@ qwen2.5-3b,gsm8k-ig,0,15,0.0000
 qwen2.5-3b,gsm8k-la,0,15,0.0000
 qwen2.5-3b,gsm8k-nl,3,15,0.2000
 qwen2.5-3b,gsm8k-zh,2,18,0.1111
+
 qwen2.5-7b,gsm8k-en,8,20,0.4000
 qwen2.5-7b,gsm8k-en-raw,9,20,0.4500
 qwen2.5-7b,gsm8k-eo,3,15,0.2000
@@ -17,3 +18,14 @@ qwen2.5-7b,gsm8k-ig,0,15,0.0000
 qwen2.5-7b,gsm8k-la,1,15,0.0667
 qwen2.5-7b,gsm8k-nl,3,15,0.2000
 qwen2.5-7b,gsm8k-zh,5,18,0.2778
+
+gemma-3-12b,gsm8k-en,18,20,0.9000
+gemma-3-12b,gsm8k-en-raw,15,20,0.7500
+gemma-3-12b,gsm8k-eo,8,15,0.5333
+gemma-3-12b,gsm8k-es,9,15,0.6000
+gemma-3-12b,gsm8k-hmn,5,15,0.3333
+gemma-3-12b,gsm8k-ig,3,15,0.2000
+gemma-3-12b,gsm8k-la,3,15,0.2000
+gemma-3-12b,gsm8k-nl,4,15,0.2667
+gemma-3-12b,gsm8k-zh,4,18,0.2222
+

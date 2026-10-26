@@ -16,7 +16,7 @@ client = OpenAI(
     base_url="https://spark.cs.trinity.edu/v1",
     api_key=api_key,
 )
-model = "gemma-3-12b"
+model = "deepseek-r1-14b"
 max_workers = 2
 max_lines = 20  # Set to a positive integer to limit examples per dataset.
 
