@@ -1,15 +1,28 @@
+import csv
+import os
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-import ollama
+from openai import OpenAI
 import pandas as pd
 
-model = 'llama3.2:1B'
-dataset_folder = 'gsm8k-es-100'
-dataset = 'test.jsonl'
+api_key = os.environ.get("TRINITY_API_KEY")
+if not api_key:
+    raise RuntimeError(
+        "Set the TRINITY_API_KEY environment variable before running the benchmark."
+    )
+
+client = OpenAI(
+    base_url="https://spark.cs.trinity.edu/v1",
+    api_key=api_key,
+)
+model = "qwen2.5-7b"
+max_workers = 2
 
 project_root = Path(__file__).resolve().parents[1]
-dataset_path = project_root / 'datasets' / dataset_folder / dataset
-df = pd.read_json(dataset_path, lines=True)
+datasets_dir = project_root / "datasets"
+dataset_paths = sorted(datasets_dir.glob("gsm8k-*/test.jsonl"))
+results_path = Path(__file__).resolve().parent / "benchmark_results.csv"
 
 
 def extract_final_answer(text):
@@ -22,21 +35,57 @@ def extract_final_answer(text):
     return text.strip().replace(',', '').replace('$', '').rstrip('.').strip()
 
 
-total = len(df)
-correct = 0
-
-for prompt in df.itertuples():
-    response = ollama.generate(
+def prompt_is_correct(prompt):
+    response = client.chat.completions.create(
         model=model,
-        prompt=f'{prompt.question}\n\nKeep your response brief.\nPut the final answer after #### on its own line.',
+        messages=[
+            {
+                "role": "user",
+                "content": (
+                    f"{prompt.question}\n\n"
+                    "Keep your response brief.\n"
+                    "Put the final answer after #### on its own line."
+                ),
+            }
+        ],
     )
-    predicted_answer = extract_final_answer(response['response'])
-    answer = extract_final_answer(prompt.answer)
-    if predicted_answer == answer:
-        correct += 1
-    else:
-        print(f"Incorrect for prompt: {prompt.question}")
-        print(f"Expected: {answer}")
-        print(f"Got: {predicted_answer}")
+    generated_text = response.choices[0].message.content
+    if generated_text is None:
+        raise RuntimeError("The model returned no response content.")
 
-print(f"Accuracy: {correct}/{total} = {correct/total:.2%}")
+    return extract_final_answer(generated_text) == extract_final_answer(prompt.answer)
+
+
+if not dataset_paths:
+    raise FileNotFoundError(f"No test.jsonl datasets found under {datasets_dir}.")
+
+with results_path.open("w", newline="", encoding="utf-8") as results_file:
+    writer = csv.DictWriter(
+        results_file,
+        fieldnames=("dataset", "model", "correct", "total", "accuracy"),
+    )
+    writer.writeheader()
+
+    for dataset_path in dataset_paths:
+        df = pd.read_json(dataset_path, lines=True)
+        total = len(df)
+        correct = 0
+
+        print(f"Running {dataset_path.parent.name}: {total} prompts")
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            correct = sum(executor.map(prompt_is_correct, df.itertuples()))
+
+        accuracy = correct / total if total else 0
+        writer.writerow(
+            {
+                "dataset": dataset_path.parent.name,
+                "model": model,
+                "correct": correct,
+                "total": total,
+                "accuracy": f"{accuracy:.4f}",
+            }
+        )
+        results_file.flush()
+        print(f"{dataset_path.parent.name}: {correct}/{total} = {accuracy:.2%}")
+
+print(f"Results saved to {results_path}")
