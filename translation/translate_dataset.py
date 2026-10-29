@@ -82,13 +82,13 @@ if __name__ == "__main__":
     Igbo -ig
     Hmong - hmn
     """
-    translate_dataset(target_language="zh", output_samples=200)
-    translate_dataset(target_language="es", output_samples=200)
-    translate_dataset(target_language="la", output_samples=200)
-    translate_dataset(target_language="nl", output_samples=200)
+    translate_dataset(target_language="zh", output_samples=300)
+    translate_dataset(target_language="es", output_samples=300)
+    translate_dataset(target_language="la", output_samples=300)
+    translate_dataset(target_language="nl", output_samples=300)
 
-    translate_dataset(target_language="eo", output_samples=200)
-    translate_dataset(target_language="ig", output_samples=200)
-    translate_dataset(target_language="hmn", output_samples=200)
+    translate_dataset(target_language="eo", output_samples=300)
+    translate_dataset(target_language="ig", output_samples=300)
+    translate_dataset(target_language="hmn", output_samples=300)
 
     print(f"Translations Complete!")
