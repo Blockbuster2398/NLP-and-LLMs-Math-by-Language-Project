@@ -6,7 +6,7 @@ from google.cloud import translate
 # https://docs.cloud.google.com/translate/docs/translate-text#translate_v3_translate_text-python Check later for advanced details (model choice?)
 
 # PROJECT_ID = environ.get("PROJECT_ID", "") # (Don't care about keeping this secret)
-PROJECT_ID = "mathbylanguage"
+PROJECT_ID = "project-250208f3-3b4e-4d2f-911"
 assert PROJECT_ID
 PARENT = f"projects/{PROJECT_ID}"
 
