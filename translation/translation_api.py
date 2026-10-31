@@ -29,6 +29,7 @@ def translate_text(text: str, target_language_code: str) -> translate.Translatio
         parent=PARENT,
         contents=[text],
         target_language_code=target_language_code,
+        mime_type="text/plain",  # default is HTML, which escapes apostrophes etc. (&#39;)
     )
     return response.translations[0]
 
