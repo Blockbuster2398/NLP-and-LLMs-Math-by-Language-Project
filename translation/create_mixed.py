@@ -3,14 +3,14 @@ import os
 import pandas as pd
 
 dataset_paths = [
-    "datasets/gsm8k-en/",
-    "datasets/gsm8k-eo/",
-    "datasets/gsm8k-es/",
-    "datasets/gsm8k-hmn/",
-    "datasets/gsm8k-ig/",
-    "datasets/gsm8k-la/",
-    "datasets/gsm8k-nl/",
-    "datasets/gsm8k-zh/",
+    "answer_only_datasets/gsm8k-en/",
+    "answer_only_datasets/gsm8k-eo/",
+    "answer_only_datasets/gsm8k-es/",
+    "answer_only_datasets/gsm8k-hmn/",
+    "answer_only_datasets/gsm8k-ig/",
+    "answer_only_datasets/gsm8k-la/",
+    "answer_only_datasets/gsm8k-nl/",
+    "answer_only_datasets/gsm8k-zh/",
 ]
 
 dfs_train = []
@@ -24,9 +24,10 @@ for path in dataset_paths:
 
 rows_train = []
 for i in range(len(dfs_train[0])):
-    for df in dfs_train:
-        if i < len(df):
-            rows_train.append(df.iloc[i])
+    # for df in dfs_train:
+    #    if i < len(df):
+    #        rows_train.append(df.iloc[i])
+    rows_train.append(dfs_train[i%8].iloc[i])
 
 final_train = pd.DataFrame(rows_train)
 
@@ -43,6 +44,6 @@ print(final_train)
 print("\nFinal Test:")
 print(final_test)
 
-os.makedirs("datasets/gsm8k-mix_full", exist_ok=True)
-final_train.to_json("datasets/gsm8k-mix_full/train.jsonl", orient="records", lines=True)
-final_test.to_json("datasets/gsm8k-mix_full/test.jsonl", orient="records", lines=True)
+os.makedirs("answer_only_datasets/gsm8k-mix", exist_ok=True)
+final_train.to_json("answer_only_datasets/gsm8k-mix/train.jsonl", orient="records", lines=True)
+final_test.to_json("answer_only_datasets/gsm8k-mix/test.jsonl", orient="records", lines=True)
